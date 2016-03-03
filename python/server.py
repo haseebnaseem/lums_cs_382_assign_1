@@ -1,5 +1,3 @@
-# https://docs.google.com/document/d/1SZPQciJfetwEEY2kG0dZCVlPGJJeKfoLR48A3_Ybm1w/edit#heading=h.z1k1aycr6ayd
-
 import sys
 import argparse
 import socket
