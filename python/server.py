@@ -3,7 +3,7 @@ import argparse
 import socket
 import os
 import threading
-import json
+import pickle
 
 def get_user_dir(server_dir, addr):
     path = os.path.join(server_dir, addr[0] + "_" + str(addr[1]))
@@ -12,9 +12,8 @@ def get_user_dir(server_dir, addr):
 
 def add_file(client_dir, filename, data):
     path = os.path.join(client_dir, filename)
-    file = open(path, 'w')
-    file.write(data)
-    file.close()
+    with open(path, 'wb') as file:
+        file.write(data)
 
 def delete_file(client_dir, filename):
     path = os.path.join(client_dir, filename)
@@ -34,7 +33,7 @@ def get_message(conn):
         temp = conn.recv(total - off)
         off = off + len(temp)
         msg = msg + temp
-    return json.loads(msg.decode('utf-8'))
+    return pickle.loads(msg)
 
 def handle_client(conn, client_dir):
     while True:
@@ -47,7 +46,6 @@ def handle_client(conn, client_dir):
             delete_file(client_dir, msg['filename'])
 
     conn.close()
-
 
 def server(port, server_dir):
     host = socket.gethostbyname(socket.gethostname())
@@ -65,7 +63,6 @@ def server(port, server_dir):
 
     s.close()
         
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("port", type=int, help="Port number the server will listen on.")

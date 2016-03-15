@@ -3,10 +3,10 @@ import argparse
 import socket
 import os
 import time
-import json
+import pickle
 
 def send_msg(conn, msg):
-    serialized = json.dumps(msg).encode('utf-8')
+    serialized = pickle.dumps(msg)
     conn.send(b'%d\n' % len(serialized))
     conn.sendall(serialized)
 
@@ -23,8 +23,8 @@ def get_file_list(client_dir):
     return file_list
 
 def send_new_file(conn, filename):
-    with open(filename, 'r') as myfile:
-        data = myfile.read()
+    with open(filename, "rb") as file:
+        data = file.read()
         msg = {
             'type': 'file_add',
             'filename': filename,
@@ -64,7 +64,7 @@ def handle_dir_change(conn, changes):
 def watch_dir(conn, client_dir, handler):
     last_file_list = {}
     while True:
-        time.sleep(10)
+        time.sleep(1)
         changes, last_file_list = get_changes(client_dir, last_file_list)
         handler(conn, changes)
 
