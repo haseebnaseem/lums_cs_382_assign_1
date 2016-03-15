@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 
 public class Server {
     class ClientHandler extends Thread {
@@ -25,7 +27,7 @@ public class Server {
                 Files.createDirectory(Paths.get(clientDir));
                 out(clientDir + " created.");
             }
-            Files.write(Paths.get(clientDir, filename), data.getBytes());
+            Files.write(Paths.get(clientDir, filename), Base64.getDecoder().decode(data.getBytes("UTF-8")));
         }
 
         private void deleteFile(String filename) throws Exception {

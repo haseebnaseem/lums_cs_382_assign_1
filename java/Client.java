@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 public class Client {
     Socket clientSocket;
@@ -92,7 +94,7 @@ public class Client {
 
     private void fileAdded(String filename) throws Exception {
         out(filename + " added.");
-        String data = new String(Files.readAllBytes(Paths.get(clientDir,filename)));
+        String data = new String(Base64.getEncoder().encode(Files.readAllBytes(Paths.get(clientDir,filename))), "UTF-8");
         Map<String, String> msg = new HashMap<String, String>();
         msg.put("type", "file_added");
         msg.put("filename", filename);
