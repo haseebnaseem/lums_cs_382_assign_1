@@ -3,10 +3,11 @@ import argparse
 import socket
 import os
 import time
-import pickle
+import base64
+import json
 
 def send_msg(conn, msg):
-    serialized = pickle.dumps(msg)
+    serialized = json.dumps(msg).encode('utf-8')
     conn.send(b'%d\n' % len(serialized))
     conn.sendall(serialized)
 
@@ -24,7 +25,7 @@ def get_file_list(client_dir):
 
 def send_new_file(conn, filename):
     with open(filename, "rb") as file:
-        data = file.read()
+        data = base64.b64encode(file.read()).decode('utf-8')
         msg = {
             'type': 'file_add',
             'filename': filename,

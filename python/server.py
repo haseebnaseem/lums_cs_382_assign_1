@@ -3,7 +3,8 @@ import argparse
 import socket
 import os
 import threading
-import pickle
+import base64
+import json
 
 def get_user_dir(server_dir, addr):
     path = os.path.join(server_dir, addr[0] + "_" + str(addr[1]))
@@ -13,7 +14,7 @@ def get_user_dir(server_dir, addr):
 def add_file(client_dir, filename, data):
     path = os.path.join(client_dir, filename)
     with open(path, 'wb') as file:
-        file.write(data)
+        file.write(base64.b64decode(data.encode('utf-8')))
 
 def delete_file(client_dir, filename):
     path = os.path.join(client_dir, filename)
@@ -33,7 +34,7 @@ def get_message(conn):
         temp = conn.recv(total - off)
         off = off + len(temp)
         msg = msg + temp
-    return pickle.loads(msg)
+    return json.loads(msg.decode('utf-8'))
 
 def handle_client(conn, client_dir):
     while True:
